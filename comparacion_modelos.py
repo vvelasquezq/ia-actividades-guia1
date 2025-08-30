@@ -1,17 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# -------------------------
-# Generar señal con ruido
-# -------------------------
 fs = 500
 t = np.linspace(0, 1, fs, endpoint=False)
 clean_signal = np.sin(2*np.pi*5*t)
 noisy_signal = clean_signal + 0.4*np.random.randn(len(t))
 
-# ============================================================
-# MODELO 1: Filtro Conv1D en PyTorch
-# ============================================================
 import torch
 import torch.nn as nn
 
@@ -29,9 +23,6 @@ class ConvFilter(nn.Module):
 conv_model = ConvFilter()
 filtered_signal = conv_model(x).detach().numpy().flatten()
 
-# ============================================================
-# MODELO 2: Autoencoder en TensorFlow
-# ============================================================
 import tensorflow as tf
 
 X_train = noisy_signal.reshape(1, -1, 1)
@@ -45,9 +36,6 @@ autoencoder.compile(optimizer="adam", loss="mse")
 autoencoder.fit(X_train, Y_train, epochs=200, verbose=0)
 denoised_autoencoder = autoencoder.predict(X_train).flatten()
 
-# ============================================================
-# MODELO 3: LSTM en TensorFlow
-# ============================================================
 window_size = 20
 def create_dataset(noisy, clean, window_size):
     X, Y = [], []
@@ -70,9 +58,7 @@ lstm_model.fit(X, Y, epochs=50, batch_size=16, verbose=0)
 predictions = lstm_model.predict(X).flatten()
 denoised_lstm = np.concatenate([np.zeros(window_size), predictions])
 
-# ============================================================
-# GRAFICAR RESULTADOS
-# ============================================================
+
 plt.figure(figsize=(12,10))
 
 # Señal original
